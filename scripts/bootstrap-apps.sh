@@ -92,7 +92,7 @@ function apply_crds() {
         # renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator
         https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.91.0/stripped-down-crds.yaml
         # renovate: datasource=github-releases depName=kubernetes-sigs/external-dns
-        https://raw.githubusercontent.com/kubernetes-sigs/external-dns/refs/tags/v0.21.0/docs/sources/crd/crd-manifest.yaml
+        https://raw.githubusercontent.com/kubernetes-sigs/external-dns/refs/tags/v0.21.0/config/crd/standard/dnsendpoints.externaldns.k8s.io.yaml
     )
 
     for crd in "${crds[@]}"; do
@@ -116,10 +116,6 @@ function apply_helm_releases() {
 
     if [[ ! -f "${helmfile_file}" ]]; then
         log error "File does not exist" "file=${helmfile_file}"
-    fi
-
-    if ! helmfile --file "${helmfile_file}" apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets; then
-        log error "Failed to apply Helm releases"
     fi
 
     log info "Helm releases applied successfully"
