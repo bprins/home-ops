@@ -30,6 +30,8 @@ metadata:
 spec:
   dependsOn:
     - name: rook-ceph
+    - name: snapshot-controller
+      namespace: kube-system
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
