@@ -118,6 +118,10 @@ function apply_helm_releases() {
         log error "File does not exist" "file=${helmfile_file}"
     fi
 
+    if ! helmfile --file "${helmfile_file}" apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets; then
+        log error "Failed to apply Helm releases"
+    fi
+
     log info "Helm releases applied successfully"
 }
 
