@@ -30,7 +30,7 @@ spec:
           limits:
             memory: 8Gi # Required for bootstrap
       storage:
-        devicePathFilter: /dev/disk/by-id/ata-Samsung_SSD_870_EVO_1TB_S75CNX0Y120.*
+        devicePathFilter: /dev/disk/by-id/ata-Samsung_SSD_870_EVO_1TB_.*
         useAllDevices: false
         useAllNodes: true
     monitoring:
