@@ -22,9 +22,6 @@ spec:
         modules:
           - name: pg_autoscaler
             enabled: true
-      mon:
-        count: 1
-        allowMultiplePerNode: false
       network:
         connections:
           requireMsgr2: true
