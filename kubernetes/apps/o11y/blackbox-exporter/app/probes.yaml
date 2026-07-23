@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: cluster-nodes
+spec:
+  module: icmp
+  prober:
+    url: blackbox-exporter.o11y.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - talos00.internal
+        - talos01.internal
+        - talos02.internal
+  metricRelabelings:
+    - targetLabel: service
+      replacement: blackbox-exporter
+      action: replace
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: grafana-http
+spec:
+  module: http_2xx
+  prober:
+    url: blackbox-exporter.o11y.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - http://grafana.o11y.svc.cluster.local:3000
+  metricRelabelings:
+    - targetLabel: service
+      replacement: blackbox-exporter
+      action: replace
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: alertmanager-http
+spec:
+  module: http_2xx
+  prober:
+    url: blackbox-exporter.o11y.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - http://kube-prometheus-stack-alertmanager.o11y.svc.cluster.local:9093
+  metricRelabelings:
+    - targetLabel: service
+      replacement: blackbox-exporter
+      action: replace
