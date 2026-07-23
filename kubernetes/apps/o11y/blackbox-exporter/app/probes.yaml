@@ -31,7 +31,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - http://grafana.o11y.svc.cluster.local:3000
+        - http://grafana-service.o11y.svc.cluster.local:3000
   metricRelabelings:
     - targetLabel: service
       replacement: blackbox-exporter
