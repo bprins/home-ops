@@ -32,6 +32,8 @@ servers:
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
       - name: forward
+        parameters: dhcp.${SECRET_DOMAIN} 10.10.0.1
+      - name: forward
         parameters: . /etc/resolv.conf
       - name: cache
         parameters: 30

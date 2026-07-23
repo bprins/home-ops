@@ -11,9 +11,9 @@ spec:
   targets:
     staticConfig:
       static:
-        - talos00.internal
-        - talos01.internal
-        - talos02.internal
+        - talos00.dhcp.${SECRET_DOMAIN}
+        - talos01.dhcp.${SECRET_DOMAIN}
+        - talos02.dhcp.${SECRET_DOMAIN}
   metricRelabelings:
     - targetLabel: service
       replacement: blackbox-exporter

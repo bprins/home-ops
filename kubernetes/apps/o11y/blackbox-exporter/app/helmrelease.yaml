@@ -36,6 +36,10 @@ spec:
       enabled: true
       selfMonitor:
         enabled: true
+    securityContext:
+      capabilities:
+        add:
+          - NET_RAW
     prometheusRule:
       enabled: true
       rules:
