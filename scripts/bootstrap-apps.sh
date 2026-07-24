@@ -84,30 +84,25 @@ function apply_sops_secrets() {
     done
 }
 
-# CRDs to be applied before the helmfile charts are installed
+# CRDs extracted from Helm charts via helmfile (--include-crds) and applied
+# before Flux reconciles workloads that reference them. Chart sources are read
+# from OCIRepository files to stay in sync with what Flux deploys.
 function apply_crds() {
     log debug "Applying CRDs"
 
-    local -r crds=(
-        # renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator
-        https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.92.1/stripped-down-crds.yaml
-        # renovate: datasource=github-releases depName=kubernetes-sigs/external-dns
-        https://raw.githubusercontent.com/kubernetes-sigs/external-dns/refs/tags/v0.21.0/config/crd/standard/dnsendpoints.externaldns.k8s.io.yaml
-        # renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api
-        https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/experimental-install.yaml
-    )
+    local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile/crds.yaml"
 
-    for crd in "${crds[@]}"; do
-        if kubectl diff --filename "${crd}" &>/dev/null; then
-            log info "CRDs are up-to-date" "crd=${crd}"
-            continue
-        fi
-        if kubectl apply --server-side --filename "${crd}" &>/dev/null; then
-            log info "CRDs applied" "crd=${crd}"
-        else
-            log error "Failed to apply CRDs" "crd=${crd}"
-        fi
-    done
+    if [[ ! -f "${helmfile_file}" ]]; then
+        log error "File does not exist" "file=${helmfile_file}"
+    fi
+
+    if ! helmfile --file "${helmfile_file}" template -q |
+        yq ea -r -e 'select(.kind == "CustomResourceDefinition")' |
+        kubectl apply --server-side --force-conflicts -f -; then
+        log error "Failed to apply CRDs"
+    fi
+
+    log info "CRDs applied successfully"
 }
 
 # Apply Helm releases using helmfile
