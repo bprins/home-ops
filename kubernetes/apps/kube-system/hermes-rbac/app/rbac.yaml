@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hermes-readonly
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hermes-readonly
+rules:
+  # Core API group — every resource EXCEPT secrets
+  - apiGroups: [""]
+    resources:
+      - configmaps
+      - endpoints
+      - events
+      - limitranges
+      - namespaces
+      - namespaces/status
+      - nodes
+      - nodes/status
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - pods/log
+      - pods/status
+      - replicationcontrollers
+      - resourcequotas
+      - serviceaccounts
+      - services
+    verbs: ["get", "list", "watch"]
+  # Built-in non-core API groups
+  - apiGroups:
+      - apps
+      - autoscaling
+      - batch
+      - certificates.k8s.io
+      - coordination.k8s.io
+      - discovery.k8s.io
+      - events.k8s.io
+      - flowcontrol.apiserver.k8s.io
+      - networking.k8s.io
+      - node.k8s.io
+      - policy
+      - rbac.authorization.k8s.io
+      - scheduling.k8s.io
+      - storage.k8s.io
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  # CRD definitions
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  # Operator CRDs
+  - apiGroups:
+      - source.toolkit.fluxcd.io
+      - kustomize.toolkit.fluxcd.io
+      - helm.toolkit.fluxcd.io
+      - notification.toolkit.fluxcd.io
+      - image.toolkit.fluxcd.io
+      - ceph.rook.io
+      - cilium.io
+      - cert-manager.io
+      - acme.cert-manager.io
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hermes-readonly
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hermes-readonly
+subjects:
+  - kind: ServiceAccount
+    name: hermes-readonly
+    namespace: kube-system
