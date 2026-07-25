@@ -40,6 +40,7 @@ rules:
       - discovery.k8s.io
       - events.k8s.io
       - flowcontrol.apiserver.k8s.io
+      - gateway.networking.k8s.io
       - networking.k8s.io
       - node.k8s.io
       - policy
@@ -63,6 +64,7 @@ rules:
       - cilium.io
       - cert-manager.io
       - acme.cert-manager.io
+      - gateway.envoyproxy.io
     resources: ["*"]
     verbs: ["get", "list", "watch"]
 ---
