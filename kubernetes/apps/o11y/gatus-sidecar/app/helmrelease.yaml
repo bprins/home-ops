@@ -10,8 +10,29 @@ spec:
     name: gatus-sidecar
   interval: 1h
   values:
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
     gatus:
       delayStartSeconds: "5"
+    sidecar:
+      kinds:
+        httproute:
+          enable: true
+          auto: true
+        service:
+          enable: true
+    httpRoute:
+      enabled: true
+      annotations:
+        gatus.home-operations.com/enabled: "false"
+      hostnames:
+        - status.${SECRET_DOMAIN}
+      parentRefs:
+        - name: envoy-internal
+          namespace: network
+    monitoring:
+      serviceMonitor:
+        enabled: true
     config:
       existingConfigMap: "{{ .Release.Name }}-configmap"
       items:
