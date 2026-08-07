@@ -67,24 +67,6 @@ function log() {
     fi
 }
 
-# Check if required environment variables are set
-function check_env() {
-    local envs=("${@}")
-    local missing=()
-
-    for env in "${envs[@]}"; do
-        if [[ -z "${!env-}" ]]; then
-            missing+=("${env}")
-        fi
-    done
-
-    if [ ${#missing[@]} -ne 0 ]; then
-        log error "Missing required env variables" "envs=${missing[*]}"
-    fi
-
-    log debug "Env variables are set" "envs=${envs[*]}"
-}
-
 # Check if required CLI tools are installed
 function check_cli() {
     local deps=("${@}")
