@@ -10,6 +10,10 @@ spec:
     name: rook-ceph-cluster
   interval: 1h
   values:
+    # Pinned to Tentacle release which was already running in this cluster before a
+    # v1.19.8 downgrade of rook due to issues with v1.20 (see .renovaterc.json5)
+    cephImage:
+      tag: v20.2.1
     cephClusterSpec:
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true

@@ -70,6 +70,17 @@
       ignoreTests: true,
     },
     {
+      // rook 1.20 moved the CSI plugin ServiceAccounts and RBAC out of the
+      // rook-ceph chart into the standalone ceph-csi-drivers chart, which this
+      // repo does not deploy. Upgrading without it wedges the ctrlplugin
+      // Deployments at 0/2 (FailedCreate: serviceaccount "rbd-ctrlplugin-sa" not
+      // found) and breaks CSI attach/detach cluster-wide. See rook/rook#18040,
+      // still open as of 2026-08-11. Lift once ceph-csi-drivers is deployed.
+      description: "Hold Rook-Ceph at v1.19.x",
+      matchPackageNames: ["/rook-ceph/", "/rook-ceph-cluster/"],
+      allowedVersions: "<1.20.0",
+    },
+    {
       matchUpdateTypes: ["major"],
       semanticCommitType: "feat",
       commitMessagePrefix: "{{semanticCommitType}}({{semanticCommitScope}})!:",
