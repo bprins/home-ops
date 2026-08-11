@@ -18,10 +18,10 @@ spec:
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       dashboard:
-        enabled: false
-        # urlPrefix: /
-        # ssl: false
-        # prometheusEndpoint: http://prometheus-operated.o11y.svc.cluster.local:9090
+        enabled: true
+        urlPrefix: /
+        ssl: false
+        prometheusEndpoint: http://kube-prometheus-stack-prometheus.o11y.svc.cluster.local:9090
       mgr:
         modules:
           - name: pg_autoscaler
@@ -38,19 +38,20 @@ spec:
         useAllDevices: false
         useAllNodes: true
     monitoring:
-      enabled: false
-      # createPrometheusRules: true
+      enabled: true
+      createPrometheusRules: true
     toolbox:
       enabled: true
-    # route:
-    #   dashboard:
-    #     host:
-    #       name: rook.turbo.ac
-    #       path: /
-    #       pathType: PathPrefix
-    #     parentRefs:
-    #       - name: envoy-internal
-    #         namespace: network
+    route:
+      dashboard:
+        host:
+          name: rook.${SECRET_DOMAIN}
+          path: /
+          pathType: PathPrefix
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
     cephBlockPools:
       - name: ceph-blockpool
         spec:
