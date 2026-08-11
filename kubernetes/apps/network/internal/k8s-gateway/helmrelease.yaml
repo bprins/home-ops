@@ -35,6 +35,16 @@ spec:
     fullnameOverride: k8s-gateway
     domain: "${SECRET_DOMAIN}"
     ttl: 300
+    replicaCount: 2
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: k8s-gateway
+            app.kubernetes.io/instance: k8s-gateway
+    priorityClassName: system-cluster-critical
     service:
       type: LoadBalancer
       port: 53
