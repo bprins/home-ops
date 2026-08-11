@@ -34,7 +34,7 @@ spec:
   values:
     fullnameOverride: k8s-gateway
     domain: "${SECRET_DOMAIN}"
-    ttl: 1
+    ttl: 300
     service:
       type: LoadBalancer
       port: 53
@@ -42,3 +42,39 @@ spec:
         lbipam.cilium.io/ips: "10.10.0.48"
       externalTrafficPolicy: Cluster
     watchedResources: ["HTTPRoute", "Service"]
+    # Names k8s_gateway can't resolve continue down the plugin chain
+    fallthrough:
+      enabled: true
+    # Manual records for things not hosted in the k8s cluster
+    zoneFiles:
+      - filename: static.zone
+        domains: ${SECRET_DOMAIN}
+        fallthrough:
+          enabled: true
+        contents: |
+          ${SECRET_DOMAIN}.        3600 IN SOA k8s-gateway.${SECRET_DOMAIN}. hostmaster.${SECRET_DOMAIN}. 1 7200 3600 1209600 300
+          ${SECRET_DOMAIN}.        3600 IN NS  k8s-gateway.${SECRET_DOMAIN}.
+          k8s-gateway.${SECRET_DOMAIN}. 3600 IN A 10.10.0.48
+          truenas.${SECRET_DOMAIN}. 300 IN A     10.10.0.11
+          forgejo.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
+          matrix.${SECRET_DOMAIN}.  300 IN CNAME truenas.${SECRET_DOMAIN}.
+          mlflow.${SECRET_DOMAIN}.  300 IN CNAME truenas.${SECRET_DOMAIN}.
+    extraZonePlugins:
+      - name: errors
+      - name: health
+        configBlock: |-
+          lameduck 5s
+      - name: ready
+      - name: prometheus
+        parameters: 0.0.0.0:9153
+      # DHCP-registered hostnames are handled by the router/DHCP server
+      - name: forward
+        parameters: dhcp.${SECRET_DOMAIN} 10.10.0.1
+      # Anything else in the zone is public DNS
+      - name: forward
+        parameters: . 1.1.1.1 1.0.0.1
+      - name: cache
+        parameters: 30
+      - name: loop
+      - name: reload
+      - name: loadbalance
