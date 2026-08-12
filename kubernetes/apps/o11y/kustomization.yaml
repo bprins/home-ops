@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: o11y
 
 components:
+  - ../../components/alerts
   - ../../components/common
 resources:
   - ./blackbox-exporter/ks.yaml

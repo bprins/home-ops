@@ -13,6 +13,8 @@ spec:
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       alertmanagerSpec:
+        alertmanagerConfiguration:
+          name: alertmanager
         storage:
           volumeClaimTemplate:
             spec:
@@ -54,3 +56,19 @@ spec:
     grafana:
       enabled: false
       forceDeployDashboards: true
+    additionalPrometheusRulesMap:
+      # Not covered by defaultRules: KubePodCrashLooping misses a container
+      # that is OOMKilled and then restarts cleanly.
+      oom-rules:
+        groups:
+          - name: oom.rules
+            rules:
+              - alert: OomKilled
+                annotations:
+                  summary: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.
+                expr: |-
+                  (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1)
+                    and
+                  ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+                labels:
+                  severity: critical
