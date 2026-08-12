@@ -20,7 +20,7 @@ My home Kubernetes cluster, run the GitOps way. A 3-node [Talos Linux](https://w
 
 ## Repository structure
 
-Follows the [onedr0p](https://github.com/onedr0p/home-ops) three-layer pattern:
+Follows a three-layer pattern:
 
 ```
 .
@@ -41,7 +41,7 @@ Follows the [onedr0p](https://github.com/onedr0p/home-ops) three-layer pattern:
 └── .mise.toml            # Pinned CLI toolchain
 ```
 
-A *unit* is one Flux Kustomization. Most hold a single app under `app/` (e.g. `apps/network/envoy-gateway/`), but a unit can group several related apps in named sibling directories instead (e.g. `apps/network/external/` covers `external-dns` and `cloudflared`).
+A _unit_ is one Flux Kustomization. Most hold a single app under `app/` (e.g. `apps/network/envoy-gateway/`), but a unit can group several related apps in named sibling directories instead (e.g. `apps/network/external/` covers `external-dns` and `cloudflared`).
 
 `kubernetes/components/` holds three reusable components, referenced from app kustomizations:
 
@@ -53,10 +53,10 @@ A *unit* is one Flux Kustomization. Most hold a single app under `app/` (e.g. `a
 
 - [mise](https://mise.jdx.dev/) to install the pinned CLI tools (`task`, `kubectl`, `flux`, `talosctl`, `talhelper`, `sops`, `age`, …):
 
-  ```sh
-  mise trust
-  mise install
-  ```
+    ```sh
+    mise trust
+    mise install
+    ```
 
 - An `age.key` referenced by `.sops.yaml` for decrypting secrets, and a `kubeconfig` for cluster access. Both are git-ignored, and both must sit **at the repository root** — `.mise.toml` and `Taskfile.yaml` point `SOPS_AGE_KEY_FILE` and `KUBECONFIG` there, and tasks fail their preconditions if the files are anywhere else.
 

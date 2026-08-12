@@ -81,6 +81,13 @@
       allowedVersions: "<1.20.0",
     },
     {
+      // The GrafanaDatasource CRD validates spec.plugins[].version against a
+      // bare-semver pattern, but the plugin's GitHub releases are tagged v0.31.0.
+      description: "Strip v prefix from VictoriaLogs Grafana plugin releases",
+      matchPackageNames: ["VictoriaMetrics/victorialogs-datasource"],
+      extractVersion: "^v(?<version>.*)$",
+    },
+    {
       matchUpdateTypes: ["major"],
       semanticCommitType: "feat",
       commitMessagePrefix: "{{semanticCommitType}}({{semanticCommitScope}})!:",
