@@ -24,13 +24,6 @@ spec:
         kind: HelmRepository
         name: cilium
         namespace: kube-system
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   valuesFrom:
     - kind: ConfigMap
       name: cilium-values
