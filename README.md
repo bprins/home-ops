@@ -1,10 +1,12 @@
 # 🏠 home-ops
 
-My home Kubernetes cluster, run the GitOps way. A 3-node [Talos Linux](https://www.talos.dev/) cluster on bare metal, kept in sync by [Flux](https://fluxcd.io/) directly from this repository — every manifest in `kubernetes/` is reconciled automatically, and secrets are committed encrypted.
+My home Kubernetes cluster, run the GitOps way. A 3-node [Talos Linux](https://www.talos.dev/) cluster kept in sync by [Flux](https://fluxcd.io/).
+
+This repository is based on [@onedr0p](https://github.com/onedr0p)'s [cluster template](https://github.com/onedr0p/cluster-template).
 
 ## Stack
 
-- **OS**: [Talos Linux](https://www.talos.dev/) — immutable and API-managed, no SSH
+- **OS**: [Talos Linux](https://www.talos.dev/)
 - **GitOps**: [Flux CD](https://fluxcd.io/)
 - **Secrets**: [SOPS](https://github.com/getsops/sops) + [age](https://github.com/FiloSottile/age)
 - **Talos config**: [talhelper](https://budimanjojo.github.io/talhelper/)
