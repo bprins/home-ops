@@ -55,13 +55,14 @@ spec:
         fallthrough:
           enabled: true
         contents: |
-          ${SECRET_DOMAIN}.        3600 IN SOA k8s-gateway.${SECRET_DOMAIN}. hostmaster.${SECRET_DOMAIN}. 1 7200 3600 1209600 300
-          ${SECRET_DOMAIN}.        3600 IN NS  k8s-gateway.${SECRET_DOMAIN}.
+          ${SECRET_DOMAIN}. 3600 IN SOA k8s-gateway.${SECRET_DOMAIN}. hostmaster.${SECRET_DOMAIN}. 1 7200 3600 1209600 300
+          ${SECRET_DOMAIN}. 3600 IN NS  k8s-gateway.${SECRET_DOMAIN}.
           k8s-gateway.${SECRET_DOMAIN}. 3600 IN A 10.10.0.48
-          truenas.${SECRET_DOMAIN}. 300 IN A     10.10.0.11
+          truenas.${SECRET_DOMAIN}. 300 IN A 10.10.0.11
           forgejo.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
-          matrix.${SECRET_DOMAIN}.  300 IN CNAME truenas.${SECRET_DOMAIN}.
-          mlflow.${SECRET_DOMAIN}.  300 IN CNAME truenas.${SECRET_DOMAIN}.
+          matrix.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
+          mlflow.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
+          litellm.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
     extraZonePlugins:
       - name: errors
       - name: health
