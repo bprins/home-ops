@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/clusterrepository_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: ClusterRepository
+metadata:
+  name: truenas
+spec:
+  allowedNamespaces:
+    list: [o11y]
+  backend:
+    sftp:
+      # 10.10.0.11 = truenas.${SECRET_DOMAIN}
+      host: 10.10.0.11
+      port: 22
+      path: /mnt/vol01/backups/kopiur
+      username: kopiur
+      auth:
+        secretRef:
+          name: kopiur-repository-secret
+          namespace: kopiur-system
+  credentialProjection:
+    allowed: true
+  create:
+    enabled: true
+  encryption:
+    passwordSecretRef:
+      name: kopiur-repository-secret
+      namespace: kopiur-system
+      key: KOPIA_PASSWORD
+  scheduleDefaults:
+    timezone: Europe/Amsterdam
