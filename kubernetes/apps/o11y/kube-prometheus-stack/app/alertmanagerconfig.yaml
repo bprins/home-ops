@@ -26,6 +26,15 @@ spec:
           - name: alertname
             value: Watchdog
             matchType: =
+      # Desktops monitored with ohmgraphite are regularly powered off
+      - receiver: blackhole
+        matchers:
+          - name: alertname
+            value: TargetDown
+            matchType: =
+          - name: job
+            value: ohmgraphite
+            matchType: =
       - receiver: "null"
         matchers:
           - name: severity
