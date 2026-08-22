@@ -6,7 +6,7 @@ metadata:
   name: truenas
 spec:
   allowedNamespaces:
-    list: [o11y]
+    list: [kopiur-system, o11y]
   backend:
     sftp:
       # 10.10.0.11 = truenas.${SECRET_DOMAIN}
