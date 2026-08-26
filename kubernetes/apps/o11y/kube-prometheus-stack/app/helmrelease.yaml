@@ -49,6 +49,12 @@ spec:
               resources:
                 requests:
                   storage: 50Gi
+    nodeExporter:
+      operatingSystems:
+        aix:
+          enabled: false
+        darwin:
+          enabled: false
     prometheus-node-exporter:
       fullnameOverride: node-exporter
     kube-state-metrics:
@@ -56,6 +62,11 @@ spec:
     grafana:
       enabled: false
       forceDeployDashboards: true
+      operator:
+        dashboardsConfigMapRefEnabled: true
+        folder: o11y
+        matchLabels:
+          dashboards: grafana
     additionalPrometheusRulesMap:
       # Not covered by defaultRules: KubePodCrashLooping misses a container
       # that is OOMKilled and then restarts cleanly.
