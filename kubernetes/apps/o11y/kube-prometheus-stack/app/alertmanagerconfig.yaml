@@ -10,6 +10,7 @@ spec:
     groupBy:
       - alertname
       - severity
+      - node
     groupWait: 30s
     groupInterval: 5m
     repeatInterval: 4h
