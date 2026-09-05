@@ -16,5 +16,8 @@ spec:
     url: http://victoria-logs.o11y.svc.cluster.local:9428
   plugins:
     - name: victoriametrics-logs-datasource
-      # renovate: datasource=github-releases depName=VictoriaMetrics/victorialogs-datasource
-      version: 0.32.0
+      # Tracks the grafana.com plugin catalog, not the plugin's GitHub releases: Grafana
+      # installs from the catalog, and a GitHub tag is only installable once it is published
+      # there. Pinning ahead of the catalog fails the install and Grafana refuses to start.
+      # renovate: datasource=custom.grafana-plugins depName=victoriametrics-logs-datasource
+      version: 0.31.0

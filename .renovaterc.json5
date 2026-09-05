@@ -81,11 +81,13 @@
       allowedVersions: "<1.20.0",
     },
     {
-      // The GrafanaDatasource CRD validates spec.plugins[].version against a
-      // bare-semver pattern, but the plugin's GitHub releases are tagged v0.31.0.
-      description: "Strip v prefix from VictoriaLogs Grafana plugin releases",
-      matchPackageNames: ["VictoriaMetrics/victorialogs-datasource"],
-      extractVersion: "^v(?<version>.*)$",
+      // Superseded by the custom.grafana-plugins datasource: the grafana.com catalog
+      // already reports bare semver, which is what the GrafanaDatasource CRD validates
+      // spec.plugins[].version against, so no extractVersion is needed here.
+      description: "Grafana plugin commit metadata",
+      matchDatasources: ["custom.grafana-plugins"],
+      semanticCommitScope: "grafana-plugin",
+      commitMessageTopic: "plugin {{depName}}",
     },
     {
       matchUpdateTypes: ["major"],
@@ -157,7 +159,26 @@
       matchDatasources: ["github-releases"],
       addLabels: ["renovate/github-release"],
     },
+    {
+      matchDatasources: ["custom.grafana-plugins"],
+      addLabels: ["renovate/grafana-plugin"],
+    },
   ],
+  customDatasources: {
+    // Grafana installs plugins from the grafana.com catalog, so the catalog - not the
+    // plugin's GitHub releases - is the authority on what is actually installable. The
+    // two diverge: a tag can sit on GitHub for days before it is published downstream,
+    // and pinning to one that has not landed yet fails the install and wedges Grafana.
+    // Modelled on the grafana-dashboards datasource in home-operations/renovate-presets.
+    "grafana-plugins": {
+      defaultRegistryUrlTemplate: "https://grafana.com/api/plugins/{{packageName}}/versions",
+      format: "json",
+      // The array constructor keeps the shape an array for a plugin with one release.
+      transformTemplates: [
+        '{"releases": [items.{"version": version, "releaseTimestamp": createdAt}]}',
+      ],
+    },
+  },
   customManagers: [
     {
       description: "Process annotated dependencies",
