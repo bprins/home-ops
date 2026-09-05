@@ -17,4 +17,4 @@ spec:
   plugins:
     - name: victoriametrics-logs-datasource
       # renovate: datasource=github-releases depName=VictoriaMetrics/victorialogs-datasource
-      version: 0.31.0
+      version: 0.32.0
