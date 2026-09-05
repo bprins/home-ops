@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/restore_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: Restore
+metadata:
+  name: atuin
+spec:
+  credentialProjection:
+    enabled: true
+  mover:
+    # mover needs to match atuin UID/GID
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+  policy:
+    # provision an empty volume on first install
+    onMissingSnapshot: Continue
+  source:
+    fromPolicy:
+      name: atuin
+      offset: 0
+  target:
+    populator: {}
