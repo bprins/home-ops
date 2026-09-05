@@ -51,4 +51,4 @@ spec:
             severity: critical
           annotations:
             summary: |-
-              The probe targeting {{ $labels.instance }} is currently having connectivity issues
+              The probe targeting {{ if $labels.node }}{{ $labels.node }}{{ else }}{{ $labels.instance }}{{ end }} is currently having connectivity issues

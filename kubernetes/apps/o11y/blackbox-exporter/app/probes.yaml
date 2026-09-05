@@ -11,9 +11,15 @@ spec:
   targets:
     staticConfig:
       static:
-        - talos00.dhcp.${SECRET_DOMAIN}
-        - talos01.dhcp.${SECRET_DOMAIN}
-        - talos02.dhcp.${SECRET_DOMAIN}
+        - 10.10.0.50
+        - 10.10.0.51
+        - 10.10.0.52
+      relabelingConfigs:
+        - sourceLabels: ["__param_target"]
+          regex: 10\.10\.0\.5(\d)
+          targetLabel: node
+          replacement: talos0$1
+          action: replace
   metricRelabelings:
     - targetLabel: service
       replacement: blackbox-exporter
