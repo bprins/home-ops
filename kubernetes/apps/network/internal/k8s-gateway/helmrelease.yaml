@@ -61,7 +61,6 @@ spec:
           truenas.${SECRET_DOMAIN}. 300 IN A 10.10.0.11
           forgejo.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
           matrix.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
-          mlflow.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
           litellm.${SECRET_DOMAIN}. 300 IN CNAME truenas.${SECRET_DOMAIN}.
     extraZonePlugins:
       - name: errors
