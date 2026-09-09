@@ -9,6 +9,21 @@ spec:
     kind: OCIRepository
     name: victoria-logs
   interval: 1h
+  # Chart drops the dashboards' `condition:` gate, so it ships a Vector dashboard
+  # we don't use. Name comes from vm.fullname` at the chart root (<release>-<chart>).
+  # Ref: https://github.com/VictoriaMetrics/helm-charts/issues/2896
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: GrafanaDashboard
+              name: victoria-logs-victoria-logs-single-vector-k8s-monitoring
+            patch: |
+              $patch: delete
+              apiVersion: grafana.integreatly.org/v1beta1
+              kind: GrafanaDashboard
+              metadata:
+                name: victoria-logs-victoria-logs-single-vector-k8s-monitoring
   values:
     global:
       image:
