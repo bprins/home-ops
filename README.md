@@ -9,7 +9,7 @@ This repository is based on [@onedr0p](https://github.com/onedr0p)'s [cluster te
 - **OS**: [Talos Linux](https://www.talos.dev/)
 - **GitOps**: [Flux CD](https://fluxcd.io/)
 - **Secrets**: [SOPS](https://github.com/getsops/sops) + [age](https://github.com/FiloSottile/age)
-- **Talos config**: [talhelper](https://budimanjojo.github.io/talhelper/)
+- **Talos config**: [topf](https://github.com/postfinance/topf)
 - **Tooling**: [mise](https://mise.jdx.dev/) for pinned CLI tools, [Task](https://taskfile.dev/) for automation
 - **Updates**: [Renovate](https://www.mend.io/renovate) keeps charts, images, and Actions current
 
@@ -37,7 +37,7 @@ Follows a three-layer pattern:
 │   ├── components/       # Reusable Kustomize components (see below)
 │   └── flux/             # Flux config (cluster kustomization, HelmRepositories)
 ├── scripts/              # Bootstrap helper scripts
-├── talos/                # Talos machine config (talhelper + SOPS)
+├── talos/                # Talos machine config (topf + SOPS)
 ├── .taskfiles/           # Task definitions (bootstrap:*, talos:*)
 ├── Taskfile.yaml         # Task entrypoint
 └── .mise.toml            # Pinned CLI toolchain
@@ -53,7 +53,7 @@ A _unit_ is one Flux Kustomization. Most hold a single app under `app/` (e.g. `a
 
 ## Prerequisites
 
-- [mise](https://mise.jdx.dev/) to install the pinned CLI tools (`task`, `kubectl`, `flux`, `talosctl`, `talhelper`, `sops`, `age`, …):
+- [mise](https://mise.jdx.dev/) to install the pinned CLI tools (`task`, `kubectl`, `flux`, `talosctl`, `topf`, `sops`, `age`, …):
 
     ```sh
     mise trust

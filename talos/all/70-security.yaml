@@ -1,0 +1,5 @@
+# topf defaults workloadIsolation to true; Talos sandboxes kubelet/pods in a
+# separate PID/mount namespace, which breaks hostPID workloads (node-exporter).
+apiVersion: v1alpha1
+kind: SecurityProfileConfig
+workloadIsolation: false

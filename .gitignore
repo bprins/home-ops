@@ -10,6 +10,7 @@
 # Kubernetes
 kubeconfig
 talosconfig
+talos/rendered/
 # Misc.
 .task/
 .DS_Store

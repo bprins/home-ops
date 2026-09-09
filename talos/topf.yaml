@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/postfinance/topf/main/schema/topf.json
+clusterName: kubernetes
+clusterEndpoint: https://10.10.0.49:6443
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+talosVersion: v1.14.0
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.37.0
+schematicId: 376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+secretsPath: talsecret.sops.yaml
+data:
+  secretDomain: ENC[AES256_GCM,data:u8tLoWThZH8YUA==,iv:XSKfSRrtSGCijTTEDcNkYouHiny4BzUyELDh5ZoGpDk=,tag:ZS28Qb9AFC55zXGipmFOtQ==,type:str]
+nodes:
+  - host: talos00
+    ip: 10.10.0.50
+    role: control-plane
+    data:
+      macAddr: 9c:6b:00:89:ab:ab
+      installDisk: /dev/nvme0n1
+      mtu: 1500
+  - host: talos01
+    ip: 10.10.0.51
+    role: control-plane
+    data:
+      macAddr: 9c:6b:00:c4:5b:ef
+      installDisk: /dev/nvme0n1
+      mtu: 1500
+  - host: talos02
+    ip: 10.10.0.52
+    role: control-plane
+    data:
+      macAddr: f4:4d:30:6e:14:31
+      installDisk: /dev/nvme0n1
+      mtu: 1500
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1eWVPcHRQc2xYZEZNeUVF
+        SVh2NEhYWWN3bG9ObE84cGszRUJOT1piZVI0Ck5sd0VuVHdBa1dUWDdzajJHODlq
+        SzlsMldNdGF5bWZQRFpma3dpd2ZmbTAKLS0tIGtUSnE5Zjk0SmJZMGVNVi9YZFVN
+        UFBPYVU0a3daYi8xTWp0UWVuRVVpcWcK4UHU3F8RpCyq9M9m2JqEzBh3NLjAf393
+        SxMDKEiq/tSRsuGBkP6Gy1mkSZ+aUkj7tw3rGlJwiVwHOQIJKoaj9A==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1z2fh4reltz3wu2vz3v8fg4lg5xq2leedrha9zunm95ycy4tpmgqqf33wdp
+  encrypted_regex: ^(secretDomain)$
+  lastmodified: "2026-09-09T12:33:02Z"
+  mac: ENC[AES256_GCM,data:6VhhmIrXZ/CgXkGIiWlq5rAOsaKR4tEFiTdLdrYdH7zgMbV38F6yNn9CNWUI4RDuz4gzSwZcFwUhy70CivnJOOPrULg3Jf8JNRt5YRNWPZbXBM3C+bWgncbUgYz1TuIzNTt36DFsyupdm2sI91luyG3nYiqUVVp8us9V5PUVBlU=,iv:YytZy0Cs4ge37W08IRCKeDp/5imRLqDs0k5Xj0cwMxc=,tag:NLg4Or9S2ocygHI1tbQ4pQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
