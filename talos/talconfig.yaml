@@ -9,7 +9,7 @@ endpoint: https://10.10.0.49:6443
 additionalApiServerCertSans: &sans
   - "127.0.0.1"
   - "10.10.0.49"
-  - "k8s.bprins.net"
+  - "k8s.${SECRET_DOMAIN}"
 additionalMachineCertSans: *sans
 
 clusterPodNets: ["10.42.0.0/16"]
