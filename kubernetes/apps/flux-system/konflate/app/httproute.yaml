@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: konflate-webhook
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      path: /healthz
+      conditions:
+        - "[STATUS] == 200"
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: network
+      sectionName: https
+  hostnames:
+    - "konflate-webhook.${SECRET_DOMAIN}"
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /hooks
+        - path:
+            type: Exact
+            value: /healthz
+      backendRefs:
+        - name: konflate
+          port: 8080
