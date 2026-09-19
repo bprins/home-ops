@@ -18,6 +18,7 @@ spec:
       statusChecks: true
       statusCheckName: Konflate
       prComments: true
+      mergeCommand: "gh pr merge {{ .Number }} --repo {{ .Repo }} --squash --delete-branch"
       mcp: true
       verifyImages: true
     secret:
