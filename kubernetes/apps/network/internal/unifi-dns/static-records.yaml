@@ -13,9 +13,9 @@ kind: Service
 metadata:
   name: record-truenas
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: truenas.${SECRET_DOMAIN}
-    external-dns.alpha.kubernetes.io/target: 10.10.0.11
-    external-dns.alpha.kubernetes.io/ttl: "300"
+    external-dns.kubernetes.io/hostname: truenas.${SECRET_DOMAIN}
+    external-dns.kubernetes.io/target: 10.10.0.11
+    external-dns.kubernetes.io/ttl: "300"
 spec:
   type: ClusterIP
   clusterIP: None
@@ -26,12 +26,12 @@ kind: Service
 metadata:
   name: record-truenas-aliases
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: >-
+    external-dns.kubernetes.io/hostname: >-
       forgejo.${SECRET_DOMAIN},
       matrix.${SECRET_DOMAIN},
       litellm.${SECRET_DOMAIN}
-    external-dns.alpha.kubernetes.io/target: truenas.${SECRET_DOMAIN}
-    external-dns.alpha.kubernetes.io/ttl: "300"
+    external-dns.kubernetes.io/target: truenas.${SECRET_DOMAIN}
+    external-dns.kubernetes.io/ttl: "300"
 spec:
   type: ClusterIP
   clusterIP: None

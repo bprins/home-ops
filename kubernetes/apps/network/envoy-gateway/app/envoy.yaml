@@ -48,14 +48,14 @@ kind: Gateway
 metadata:
   name: envoy-external
   annotations:
-    external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+    external-dns.kubernetes.io/target: "external.${SECRET_DOMAIN}"
   labels:
     external-dns.home.arpa/enabled: "true"
 spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: external.${SECRET_DOMAIN}
+      external-dns.kubernetes.io/hostname: external.${SECRET_DOMAIN}
       lbipam.cilium.io/ips: "10.10.0.46"
   listeners:
     - name: http
@@ -84,7 +84,7 @@ spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: internal.${SECRET_DOMAIN}
+      external-dns.kubernetes.io/hostname: internal.${SECRET_DOMAIN}
       lbipam.cilium.io/ips: "10.10.0.47"
   listeners:
     - name: http
@@ -159,7 +159,7 @@ kind: HTTPRoute
 metadata:
   name: https-redirect
   annotations:
-    external-dns.alpha.kubernetes.io/controller: none
+    external-dns.kubernetes.io/controller: none
 spec:
   parentRefs:
     - name: envoy-external
