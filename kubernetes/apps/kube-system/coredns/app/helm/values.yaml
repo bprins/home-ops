@@ -38,12 +38,13 @@ servers:
       # name walks the three search domains client-side first.
       - name: autopath
         parameters: "@kubernetes"
+      # Both zones live on the UCG Fiber. ${SECRET_DOMAIN} is written there by
+      # unifi-dns; `internal` is ICANN-reserved for private use, never delegated
+      # publicly, and holds the hand-made record unifi-dns needs to reach the
+      # console. Without these two rules the queries fall through to
+      # /etc/resolv.conf (1.1.1.1) and return public answers or NXDOMAIN.
       - name: forward
-        parameters: ${SECRET_DOMAIN} 10.10.0.48
-      # The UCG Fiber answers for the `internal` zone, which is ICANN-reserved
-      # for private use and never delegated publicly. unifi-dns reaches the
-      # console by name through here; without this rule the query would go to
-      # /etc/resolv.conf (1.1.1.1) and come back NXDOMAIN.
+        parameters: ${SECRET_DOMAIN} 10.10.0.1
       - name: forward
         parameters: internal 10.10.0.1
       - name: forward
