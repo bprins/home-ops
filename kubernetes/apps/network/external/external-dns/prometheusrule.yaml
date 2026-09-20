@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: external-dns-rules
+  namespace: network
+spec:
+  groups:
+    - name: external-dns.rules
+      rules:
+        - alert: ExternalDNSAbsent
+          expr: |-
+            absent(up{job="external-dns"})
+          for: 10m
+          annotations:
+            summary: >-
+              external-dns has disappeared from Prometheus service discovery
+          labels:
+            severity: critical
+
+        - alert: ExternalDNSNotReconciling
+          expr: |-
+            max by (job) (external_dns_controller_consecutive_soft_errors{job="external-dns"}) > 0
+          for: 15m
+          annotations:
+            summary: >-
+              external-dns has failed {{ $value }} consecutive reconciles
+          labels:
+            severity: critical
+
+        - alert: ExternalDNSSourceRecordsDropped
+          expr: |-
+            max by (job) (external_dns_source_endpoints_total{job="external-dns"})
+              < 0.5 * max by (job) (external_dns_source_endpoints_total{job="external-dns"} offset 1h)
+          for: 15m
+          annotations:
+            summary: >-
+              external-dns now sees {{ $value }} endpoints, less than half of an hour ago
+          labels:
+            severity: critical
+
+        - alert: ExternalDNSStale
+          expr: |-
+            time() - max by (job) (external_dns_controller_last_sync_timestamp_seconds{job="external-dns"}) > 900
+          for: 5m
+          annotations:
+            summary: >-
+              external-dns has not completed a sync in over 15 minutes
+          labels:
+            severity: warning
