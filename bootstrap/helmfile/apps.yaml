@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+# Bootstraps core applications that provide a minimal runtime base for the
+# cluster. These releases are installed first so the cluster has the resources
+# Flux needs before its own reconciliation begins.
+#
+# Charts and versions are read from each app's OCIRepository, so a version has
+# one source of truth and Renovate only has to bump it in one place.
+
+helmDefaults:
+  cleanupOnFail: true
+  wait: true
+  waitForJobs: true
+
+bases:
+  - default.yaml
+
+defaultInherit: bootstrap
+
+releases:
+  - name: cilium
+    namespace: kube-system
+    atomic: true
+
+  - name: coredns
+    namespace: kube-system
+    atomic: true
+    needs: ["kube-system/cilium"]
+
+  - name: spegel
+    namespace: kube-system
+    atomic: true
+    needs: ["kube-system/coredns"]
+
+  - name: cert-manager
+    namespace: cert-manager
+    atomic: true
+    needs: ["kube-system/spegel"]
+
+  - name: flux-operator
+    namespace: flux-system
+    atomic: true
+    needs: ["cert-manager/cert-manager"]
+
+  - name: flux-instance
+    namespace: flux-system
+    atomic: true
+    needs: ["flux-system/flux-operator"]

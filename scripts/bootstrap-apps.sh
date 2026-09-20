@@ -108,7 +108,7 @@ function apply_crds() {
 function apply_helm_releases() {
     log debug "Applying Helm releases with helmfile"
 
-    local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile.yaml"
+    local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile/apps.yaml"
 
     if [[ ! -f "${helmfile_file}" ]]; then
         log error "File does not exist" "file=${helmfile_file}"

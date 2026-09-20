@@ -1,8 +1,20 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 templates:
+  # Chart and version are read from the app's OCIRepository, values from the
+  # HelmRelease's inline spec.values.
   default:
     chart: '{{ (fromYaml (tpl (readFile "./templates/release.yaml.gotmpl") .)).chart }}'
     version: '{{ (fromYaml (tpl (readFile "./templates/release.yaml.gotmpl") .)).version }}'
     values:
       - ./templates/values.yaml.gotmpl
+  # As above, but values come from the app's helm/values.yaml — the same file
+  # Flux feeds the HelmRelease through a generated ConfigMap. Inline
+  # spec.values are deliberately NOT applied here: they hold post-bootstrap
+  # settings (such as cilium's empty operator tolerations) that would stop the
+  # release scheduling on nodes that are still NotReady.
+  bootstrap:
+    chart: '{{ (fromYaml (tpl (readFile "./templates/release.yaml.gotmpl") .)).chart }}'
+    version: '{{ (fromYaml (tpl (readFile "./templates/release.yaml.gotmpl") .)).version }}'
+    values:
+      - ./templates/bootstrap-values.yaml.gotmpl
