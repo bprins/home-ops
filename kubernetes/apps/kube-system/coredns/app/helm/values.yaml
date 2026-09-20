@@ -26,13 +26,26 @@ servers:
           class error
       - name: prometheus
         parameters: 0.0.0.0:9153
+      # `pods verified` rather than `insecure` because autopath requires it: it
+      # resolves the client's source IP to a Pod to learn its namespace, which
+      # needs the Pod cache that only this mode maintains.
       - name: kubernetes
         parameters: cluster.local in-addr.arpa ip6.arpa
         configBlock: |-
-          pods insecure
+          pods verified
           fallthrough in-addr.arpa ip6.arpa
+      # Server-side search path completion: without it every lookup of a short
+      # name walks the three search domains client-side first.
+      - name: autopath
+        parameters: "@kubernetes"
       - name: forward
         parameters: ${SECRET_DOMAIN} 10.10.0.48
+      # The UCG Fiber answers for the `internal` zone, which is ICANN-reserved
+      # for private use and never delegated publicly. unifi-dns reaches the
+      # console by name through here; without this rule the query would go to
+      # /etc/resolv.conf (1.1.1.1) and come back NXDOMAIN.
+      - name: forward
+        parameters: internal 10.10.0.1
       - name: forward
         parameters: . /etc/resolv.conf
       - name: cache

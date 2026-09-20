@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app unifi-dns
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: external-dns
+      version: 1.22.0
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: flux-system
+  values:
+    fullnameOverride: *app
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/home-operations/external-dns-unifi-webhook
+          tag: 0.10.12@sha256:5338b99662e2e15048b4e14b49e17279d384970fdcb3c29169f509f806f49cbe
+        env:
+          # UCG Fiber. `unifi.internal` is a static DNS entry created by hand in
+          # the UniFi console, not managed here: external-dns only owns
+          # ${SECRET_DOMAIN}, so it can never rewrite the name it needs to reach
+          # the console. CoreDNS forwards the `internal` zone to 10.10.0.1 --
+          # see kubernetes/apps/kube-system/coredns/app/helm/values.yaml.
+          # The console serves a self-signed certificate; the webhook skips
+          # verification by default, so the name mismatch is harmless.
+          - name: UNIFI_HOST
+            value: https://unifi.internal
+          - name: UNIFI_SITE
+            value: default
+          - name: UNIFI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: &secret unifi-dns-secret
+                key: api-key
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+    extraArgs:
+      - --events
+    policy: sync
+    sources: ["gateway-httproute", "service"]
+    domainFilters: ["${SECRET_DOMAIN}"]
+    txtOwnerId: unifi
+    txtPrefix: k8s.unifi.%{record_type}-
+    serviceMonitor:
+      enabled: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *secret
