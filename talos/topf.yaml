@@ -4,7 +4,7 @@ clusterEndpoint: https://10.10.0.49:6443
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
 talosVersion: v1.14.0
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.37.0
+kubernetesVersion: v1.37.1
 schematicId: 376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
 secretsPath: talsecret.sops.yaml
 data:
