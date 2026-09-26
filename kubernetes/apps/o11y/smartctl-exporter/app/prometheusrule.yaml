@@ -58,6 +58,16 @@ spec:
           labels:
             severity: critical
 
+        - alert: SmartDeviceAvailableSpareDropping
+          expr: |-
+            smartctl_device_available_spare < 100
+          for: 5m
+          annotations:
+            summary: >-
+              Device {{ $labels.device }} on node {{ $labels.node }} has started using spare blocks ({{ $value }}% left)
+          labels:
+            severity: warning
+
         - alert: SmartDeviceInterfaceSlow
           expr: |-
             smartctl_device_interface_speed{speed_type="current"} != on(device, instance, namespace, pod, node) smartctl_device_interface_speed{speed_type="max"}

@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/observability.giantswarm.io/silence_v1alpha2.json
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: Silence
+metadata:
+  name: talos02-nvme0-wear
+spec:
+  # Wear past 100% sets the reliability-degraded bit; SmartDeviceAvailableSpareDropping and SmartDeviceMediaErrors still catch real failure.
+  matchers:
+    - name: alertname
+      matchType: "=~"
+      value: SmartDeviceCriticalWarning|SmartDeviceTestFailed
+    - name: node
+      matchType: "="
+      value: talos02
+    - name: device
+      matchType: "="
+      value: nvme0
