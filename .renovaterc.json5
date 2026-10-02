@@ -8,6 +8,7 @@
     ":dependencyDashboard",
     ":disableRateLimiting",
     ":semanticCommits",
+    "github>home-operations/renovate-presets//apps/cnpg.json5#8.1.0",
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
@@ -76,6 +77,14 @@
       description: "Hold Rook-Ceph at v1.19.x",
       matchPackageNames: ["/rook-ceph/", "/rook-ceph-cluster/"],
       allowedVersions: "<1.20.0",
+    },
+    {
+      // vchord-scratch images are built per Postgres major (pg18-v*), so a major
+      // Postgres bump would leave the extension without a matching library.
+      description: "Hold CloudNativePG Postgres at 18 until the extension images move with it",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/cloudnative-pg/postgresql"],
+      allowedVersions: "/^18\\./",
     },
     {
       // Superseded by the custom.grafana-plugins datasource: the grafana.com catalog
