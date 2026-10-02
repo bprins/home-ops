@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kritika
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: kritika
+  interval: 1h
+  values:
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+    config:
+      webUrl: https://kritika.${SECRET_DOMAIN}
+      appsName: github
+      appsAccounts: bprins
+      appsClientId:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-secret
+            key: GITHUB_APP_CLIENT_ID
+      appsPrivateKey:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-secret
+            key: GITHUB_APP_PRIVATE_KEY
+      appsWebhookSecret:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-secret
+            key: GITHUB_APP_WEBHOOK_SECRET
+      authAdminPassword:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-secret
+            key: KRITIKA_AUTH_ADMIN_PASSWORD
+      providersName: openrouter
+      providersType: openrouter
+      providersApiKey:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-secret
+            key: OPENROUTER_API_KEY
+      defaultsModelsReview: openrouter/openai/gpt-6.1-sol
+      defaultsModelsFallback: openrouter/anthropic/claude-opus-5.5
+      embeddingModel: openrouter/voyageai/voyage-code-4
+      embeddingDims: 1024
+    configFile:
+      defaults:
+        agent: { maxSteps: 20 }
+    database:
+      owner:
+        existingSecret: kritika-postgres-credentials
+      app:
+        existingSecret: kritika-postgres-app
+      runner:
+        existingSecret: kritika-postgres-runner
+    httpRoute:
+      enabled: true
+      annotations:
+        gatus.home-operations.com/endpoint: |
+          path: /api/v1/meta
+          conditions:
+            - "[STATUS] == 200"
+      parentRefs:
+        - name: envoy-internal
+          namespace: network
+          sectionName: https
+      hostnames:
+        - kritika.${SECRET_DOMAIN}
+    monitoring:
+      serviceMonitor:
+        enabled: true
+    networkPolicy:
+      enabled: true
+      type: cilium
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    runner:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
