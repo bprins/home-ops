@@ -18,7 +18,7 @@ spec:
           app:
             image: &image
               repository: quay.io/bprins/price-patrol
-              tag: 0.3.0@sha256:b6eeb3e9f72614dda5dc396abfad5aa753772588c444caefbaf6f1f5f1bccf4e
+              tag: 0.4.0@sha256:91b0c64b0192edd996c35ce3e5c8c0d8bd4b3c09f78938e255c38f6223a139ee
             args: ["price-patrol", "web", "--host", "0.0.0.0", "--port", "8080"]
             env:
               TZ: &tz Europe/Amsterdam
