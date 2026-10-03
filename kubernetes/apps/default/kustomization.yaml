@@ -10,4 +10,5 @@ components:
 resources:
   - ./atuin/ks.yaml
   - ./echo/ks.yaml
+  - ./ntfy/ks.yaml
   - ./price-patrol/ks.yaml
