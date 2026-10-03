@@ -10,7 +10,7 @@ spec:
       namespace: network
       sectionName: https
   hostnames:
-    - "kritika.${SECRET_DOMAIN}"
+    - "kritika-webhook.${SECRET_DOMAIN}"
   rules:
     - matches:
         - path:
