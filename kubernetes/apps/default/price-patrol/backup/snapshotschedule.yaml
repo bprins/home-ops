@@ -8,4 +8,6 @@ spec:
   policyRef:
     name: price-patrol
   schedule:
-    cron: H * * * *
+    # An hour after the monitor CronJob's 08:00 and 20:00 scrapes
+    cron: H 9,21 * * *
+    timezone: Europe/Amsterdam

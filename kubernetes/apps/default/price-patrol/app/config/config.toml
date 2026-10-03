@@ -1,5 +1,5 @@
 [notifications]
-ntfy_server = "https://ntfy.${SECRET_DOMAIN}"
+ntfy_server = "http://ntfy.default.svc.cluster.local"
 ntfy_topic = "price-patrol-alerts"
 # ntfy_token = "tk_..."  # Only needed if the topic requires authentication
 
