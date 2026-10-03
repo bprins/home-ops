@@ -1,0 +1,60 @@
+[notifications]
+ntfy_server = "https://ntfy.${SECRET_DOMAIN}"
+ntfy_topic = "price-patrol-alerts"
+# ntfy_token = "tk_..."  # Only needed if the topic requires authentication
+
+# Each [[products]] entry is one group in the web UI. Its name identifies it in the
+# database, so renaming an entry starts a new group.
+#
+# Find products by search query (stores that allow searching: zalando) and/or by
+# explicit product page URLs (all stores). Bol.com's robots.txt disallows its search
+# pages, so Bol products are always listed by URL. Other pack sizes that a Bol page
+# lists as variants are tracked too (set include_variants = false to turn that off),
+# so one URL per product family is usually enough.
+
+[[products]]
+name = "Schiesser boxershorts"
+store = "zalando"
+search_query = "Schiesser SHORTS"
+gender = "man"
+pack_size = 3
+size = "L"
+
+[[products]]
+name = "Schiesser T-shirts"
+store = "zalando"
+search_query = "Schiesser Rundhals Original"
+gender = "man"
+pack_size = 2
+size = "L"
+
+[[products]]
+name = "Finish Power All in 1"
+store = "bol"
+urls = [
+    "https://www.bol.com/nl/nl/p/finish-power-all-in-one-regular-vaatwastabletten-68-stuks/9300000087803697/",
+    "https://www.bol.com/nl/nl/p/finish-powerball-power-all-in-1-vaatwastabletten-reiniging-glans-68-tabletten-voordeelverpakking-4-stuks/9300000223763980/",
+    "https://www.bol.com/nl/nl/p/finish-vaatwastabletten-power-all-in-1-regular-2x-80tabs/9300000179177481/",
+    "https://www.bol.com/nl/nl/p/finish-powerball-all-in-one-vaatwastabletten-272-stuks/9300000186369737/",
+    "https://www.bol.com/nl/nl/p/finish-powerball-power-all-in-1-vaatwassertabletten-320-vaatwastabletten-jaarverpakking/9300000182750989/",
+]
+
+[[products]]
+name = "Zendium Classic"
+store = "bol"
+urls = [
+    "https://www.bol.com/nl/nl/p/zendium-tandpasta-classic-75ml/9300000010223451/",
+    "https://www.bol.com/nl/nl/p/3x-zendium-tandpasta-classic-75-ml/9300000238503581/",
+    "https://www.bol.com/nl/nl/p/zendium-tandpasta-classic-75-ml-voordeelverpakking-6-stuks/9300000167358537/",
+    "https://www.bol.com/nl/nl/p/zendium-tandpasta-classic-75-ml-voordeelverpakking-12-stuks/9300000167358975/",
+    "https://www.bol.com/nl/nl/p/zendium-classic-tandpasta-12-x-75-ml-voordeelverpakking/9200000131437983/",
+]
+
+[[products]]
+name = "Sun machinereiniger"
+store = "bol"
+urls = [
+    "https://www.bol.com/nl/nl/p/sun-vaatwasmachinereiniger-in-wash-te-gebruiken-tijdens-de-normale-vaatwasbeurt-van-je-afwasmachine-6-x-4-doses/9300000197886138/",
+    "https://www.bol.com/nl/nl/p/sun-machine-cleaner-in-wash-vaatwasmachinereiniger-4-wasbeurten-voordeelverpakking-2-stuks/9300000222913891/",
+    "https://www.bol.com/nl/nl/p/sun-optimum-machinereiniger-12-x-3-stuks/9300000112582867/",
+]

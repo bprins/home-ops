@@ -1,0 +1,136 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: price-patrol
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      price-patrol:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: &image
+              repository: forgejo.bprins.net/bprins/price-patrol
+              tag: 0.2.0@sha256:bcafd08b76e395140f37fe7cd7ad155309c21b33b02ca7b52c10776993113ec4
+            args: ["price-patrol", "web", "--host", "0.0.0.0", "--port", "8080"]
+            env:
+              TZ: &tz Europe/Amsterdam
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: &port 8080
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+              seccompProfile: { type: RuntimeDefault }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
+
+      monitor:
+        type: cronjob
+        cronjob:
+          schedule: "0 8,20 * * *"
+          timeZone: *tz
+          concurrencyPolicy: Forbid
+          # Don't retry a failed scrape against the stores
+          backoffLimit: 0
+          # Kill a hung browser so Forbid doesn't block every later run
+          activeDeadlineSeconds: 1800
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+        containers:
+          app:
+            # The image's default command runs `monitor --save` under Xvfb
+            image: *image
+            env:
+              TZ: *tz
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              # Firefox's content sandbox needs chroot inside its user namespace
+              capabilities: { drop: ["ALL"], add: ["SYS_CHROOT"] }
+              # RuntimeDefault blocks the user namespaces Firefox sandboxes web content with
+              seccompProfile: { type: Unconfined }
+            resources:
+              requests:
+                cpu: 500m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+        pod:
+          affinity:
+            podAffinity:
+              # The ReadWriteOnce data volume can only be shared on the web pod's node
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: price-patrol
+                      app.kubernetes.io/component: price-patrol
+                  topologyKey: kubernetes.io/hostname
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      app:
+        controller: price-patrol
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      data:
+        # PVC is created by the price-patrol-backup Kustomization so kopiur can populate
+        # it from the latest snapshot on a rebuild
+        existingClaim: price-patrol-data
+        globalMounts:
+          - path: /app/data
+      config:
+        type: configMap
+        name: price-patrol-config
+        globalMounts:
+          - path: /app/config.toml
+            subPath: config.toml
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      home:
+        type: emptyDir
+        advancedMounts:
+          monitor:
+            app:
+              - path: /home/app
+      shm:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 1Gi
+        advancedMounts:
+          monitor:
+            app:
+              - path: /dev/shm
