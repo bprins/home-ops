@@ -1,6 +1,8 @@
 apiVersion: v1alpha1
 kind: ResolverConfig
 nameservers:
+  # Router first so nodes see the internal records unifi-dns publishes
+  - address: 10.10.0.1
   - address: 1.1.1.1
   - address: 1.0.0.1
 searchDomains:
