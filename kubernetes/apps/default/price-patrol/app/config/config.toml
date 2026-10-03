@@ -1,16 +1,10 @@
 [notifications]
 ntfy_server = "http://ntfy.default.svc.cluster.local"
 ntfy_topic = "price-patrol-alerts"
-# ntfy_token = "tk_..."  # Only needed if the topic requires authentication
+# ntfy_token = "tk_..."
 
-# Each [[products]] entry is one group in the web UI. Its name identifies it in the
-# database, so renaming an entry starts a new group.
-#
-# Find products by search query (stores that allow searching: zalando) and/or by
-# explicit product page URLs (all stores). Bol.com's robots.txt disallows its search
-# pages, so Bol products are always listed by URL. Other pack sizes that a Bol page
-# lists as variants are tracked too (set include_variants = false to turn that off),
-# so one URL per product family is usually enough.
+# Renaming an entry starts a new group in the web UI.
+# Bol.com is tracked by URL only (its robots.txt disallows search); other pack sizes are added automatically.
 
 [[products]]
 name = "Schiesser boxershorts"

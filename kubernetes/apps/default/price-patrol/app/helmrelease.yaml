@@ -17,8 +17,8 @@ spec:
         containers:
           app:
             image: &image
-              repository: forgejo.bprins.net/bprins/price-patrol
-              tag: 0.2.0@sha256:bcafd08b76e395140f37fe7cd7ad155309c21b33b02ca7b52c10776993113ec4
+              repository: quay.io/bprins/price-patrol
+              tag: 0.3.0@sha256:b6eeb3e9f72614dda5dc396abfad5aa753772588c444caefbaf6f1f5f1bccf4e
             args: ["price-patrol", "web", "--host", "0.0.0.0", "--port", "8080"]
             env:
               TZ: &tz Europe/Amsterdam
@@ -60,7 +60,7 @@ spec:
           failedJobsHistory: 1
         containers:
           app:
-            # The image's default command runs `monitor --save` under Xvfb
+            # No args: the image's default command is the scrape
             image: *image
             env:
               TZ: *tz
@@ -69,7 +69,7 @@ spec:
               readOnlyRootFilesystem: true
               # Firefox's content sandbox needs chroot inside its user namespace
               capabilities: { drop: ["ALL"], add: ["SYS_CHROOT"] }
-              # RuntimeDefault blocks the user namespaces Firefox sandboxes web content with
+              # RuntimeDefault blocks the user namespaces Firefox's sandbox uses
               seccompProfile: { type: Unconfined }
             resources:
               requests:
@@ -80,7 +80,7 @@ spec:
         pod:
           affinity:
             podAffinity:
-              # The ReadWriteOnce data volume can only be shared on the web pod's node
+              # ReadWriteOnce: shareable only on the web pod's node
               requiredDuringSchedulingIgnoredDuringExecution:
                 - labelSelector:
                     matchLabels:
