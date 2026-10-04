@@ -48,8 +48,10 @@ spec:
       embeddingModel: openrouter/voyageai/voyage-code-4
       embeddingDims: 1024
     configFile:
+      egress:
+        allowHosts: [raw.githubusercontent.com]
       defaults:
-        agent: { maxSteps: 20 }
+        agent: { maxSteps: 20, commands: [gh, curl, jq, yq, rg, fd] }
     database:
       owner:
         existingSecret: kritika-postgres-credentials
@@ -71,6 +73,14 @@ spec:
       hostnames:
         - kritika.${SECRET_DOMAIN}
     monitoring:
+      dashboards:
+        enabled: true
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            dashboards: grafana
+      prometheusRule:
+        enabled: true
       serviceMonitor:
         enabled: true
     networkPolicy:
