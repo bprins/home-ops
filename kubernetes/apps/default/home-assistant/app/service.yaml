@@ -1,0 +1,28 @@
+---
+# Home Assistant runs outside the cluster. A selectorless Service with a
+# hand-written EndpointSlice gives envoy a backendRef to route to.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.33.0-standalone-strict/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: home-assistant
+spec:
+  ports:
+    - name: http
+      port: 8123
+      targetPort: 8123
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.33.0-standalone-strict/endpointslice-discovery-v1.json
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: home-assistant
+  labels:
+    kubernetes.io/service-name: home-assistant
+addressType: IPv4
+ports:
+  - name: http
+    port: 8123
+    protocol: TCP
+endpoints:
+  - addresses: ["10.10.0.35"]
