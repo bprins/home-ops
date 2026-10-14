@@ -11,6 +11,10 @@ spec:
   interval: 1h
   values:
     replicas: 2
+    # 0.0.65+ must not run alongside older thread workers
+    strategy:
+      type: Recreate
+      rollingUpdate: null
     deploymentAnnotations:
       reloader.stakater.com/auto: "true"
     config:
@@ -44,15 +48,14 @@ spec:
           secretKeyRef:
             name: kritika-secret
             key: OPENROUTER_API_KEY
-      defaultsModelsReview: openrouter/openai/gpt-6.1-sol
-      defaultsModelsFallback: openrouter/anthropic/claude-opus-5.5
+      reviewModel: openrouter/openai/gpt-6.1-sol
+      reviewFallback: openrouter/anthropic/claude-opus-5.5
       embeddingModel: openrouter/voyageai/voyage-code-4
       embeddingDims: 1024
     configFile:
       egress:
-        allowHosts: [raw.githubusercontent.com]
-      defaults:
-        agent: { maxSteps: 20, commands: [gh, curl, jq, yq, rg, fd] }
+        allow: [raw.githubusercontent.com]
+      agent: { steps: 20, commands: [gh, curl, jq, yq, rg, fd] }
     database:
       owner:
         existingSecret: kritika-postgres-credentials
