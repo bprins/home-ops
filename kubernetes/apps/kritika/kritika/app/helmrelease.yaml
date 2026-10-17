@@ -19,43 +19,44 @@ spec:
       reloader.stakater.com/auto: "true"
     config:
       webUrl: https://kritika.${SECRET_DOMAIN}
-      appsName: github
-      appsAccounts: bprins
-      appsClientId:
-        valueFrom:
-          secretKeyRef:
-            name: kritika-secret
-            key: GITHUB_APP_CLIENT_ID
-      appsPrivateKey:
-        valueFrom:
-          secretKeyRef:
-            name: kritika-secret
-            key: GITHUB_APP_PRIVATE_KEY
-      appsWebhookSecret:
-        valueFrom:
-          secretKeyRef:
-            name: kritika-secret
-            key: GITHUB_APP_WEBHOOK_SECRET
-      authAdminPassword:
-        valueFrom:
-          secretKeyRef:
-            name: kritika-secret
-            key: KRITIKA_AUTH_ADMIN_PASSWORD
-      providersName: openrouter
-      providersType: openrouter
-      providersApiKey:
-        valueFrom:
-          secretKeyRef:
-            name: kritika-secret
-            key: OPENROUTER_API_KEY
-      reviewModel: openrouter/openai/gpt-6.1-sol
-      reviewFallback: openrouter/anthropic/claude-opus-5.5
-      embeddingModel: openrouter/voyageai/voyage-code-4
-      embeddingDims: 1024
-    configFile:
+      auth:
+        admin:
+          password: { env: KRITIKA_AUTH_ADMIN_PASSWORD }
+      apps:
+        github:
+          accounts: [bprins]
+          clientId: { env: GITHUB_APP_CLIENT_ID }
+          privateKey: { env: GITHUB_APP_PRIVATE_KEY }
+          webhookSecret: { env: GITHUB_APP_WEBHOOK_SECRET }
+      providers:
+        openrouter:
+          type: openrouter
+          apiKey: { env: OPENROUTER_API_KEY }
+      review:
+        model: openrouter/openai/gpt-6.1-sol
+        fallback: openrouter/anthropic/claude-opus-5.5
+      embedding:
+        model: openrouter/voyageai/voyage-code-4
+        dims: 1024
       egress:
         allow: [raw.githubusercontent.com]
-      agent: { steps: 20, commands: [gh, curl, jq, yq, rg, fd] }
+      agent: { steps: 20 }
+    env:
+      KRITIKA_AUTH_ADMIN_PASSWORD:
+        valueFrom:
+          secretKeyRef: { name: kritika-secret, key: KRITIKA_AUTH_ADMIN_PASSWORD }
+      GITHUB_APP_CLIENT_ID:
+        valueFrom:
+          secretKeyRef: { name: kritika-secret, key: GITHUB_APP_CLIENT_ID }
+      GITHUB_APP_PRIVATE_KEY:
+        valueFrom:
+          secretKeyRef: { name: kritika-secret, key: GITHUB_APP_PRIVATE_KEY }
+      GITHUB_APP_WEBHOOK_SECRET:
+        valueFrom:
+          secretKeyRef: { name: kritika-secret, key: GITHUB_APP_WEBHOOK_SECRET }
+      OPENROUTER_API_KEY:
+        valueFrom:
+          secretKeyRef: { name: kritika-secret, key: OPENROUTER_API_KEY }
     database:
       owner:
         existingSecret: kritika-postgres-credentials
@@ -97,9 +98,11 @@ spec:
       limits:
         memory: 512Mi
     runner:
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          memory: 1Gi
+      podTemplate:
+        spec:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
