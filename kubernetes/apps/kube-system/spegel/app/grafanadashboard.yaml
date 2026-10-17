@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: spegel
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  # grafana.com 18089 is stale (pre-0.1 metric names); the chart dropped its bundled copy in 0.8.0
+  url: https://raw.githubusercontent.com/spegel-org/spegel/v0.7.4/charts/spegel/monitoring/grafana-dashboard.json
