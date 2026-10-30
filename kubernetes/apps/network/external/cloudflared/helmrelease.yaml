@@ -59,6 +59,14 @@ spec:
         runAsUser: 65534
         runAsGroup: 65534
         seccompProfile: { type: RuntimeDefault }
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: cloudflared
+                  app.kubernetes.io/component: cloudflared
+              topologyKey: kubernetes.io/hostname
     service:
       app:
         controller: cloudflared
