@@ -23,6 +23,11 @@ spec:
           secretKeyRef:
             name: external-dns-secret
             key: api-token
+      - name: CF_ZONE_ID
+        valueFrom:
+          secretKeyRef:
+            name: external-dns-secret
+            key: zone-id
     extraArgs:
       - --cloudflare-dns-records-per-page=1000
       - --cloudflare-proxied
@@ -34,6 +39,7 @@ spec:
       - --managed-record-types=AAAA
       - --managed-record-types=CNAME
       - --managed-record-types=TXT
+      - --zone-id-filter=$(CF_ZONE_ID)
     policy: sync
     sources: ["crd", "gateway-httproute"]
     txtPrefix: k8s.
