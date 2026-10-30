@@ -30,6 +30,10 @@ spec:
       - --crd-source-kind=DNSEndpoint
       - --events
       - --gateway-label-filter=external-dns.home.arpa/enabled=true
+      - --managed-record-types=A
+      - --managed-record-types=AAAA
+      - --managed-record-types=CNAME
+      - --managed-record-types=TXT
     policy: sync
     sources: ["crd", "gateway-httproute"]
     txtPrefix: k8s.
