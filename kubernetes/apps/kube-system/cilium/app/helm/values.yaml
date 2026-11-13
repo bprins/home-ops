@@ -21,6 +21,16 @@ dashboards:
   enabled: true
 hubble:
   enabled: true
+  metrics:
+    enable:
+      - dns:query;ignoreAAAA
+      - drop
+      - tcp
+      - flow
+      - icmp
+      - http
+    serviceMonitor:
+      enabled: true
   relay:
     enabled: true
   ui:
