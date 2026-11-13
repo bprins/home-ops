@@ -22,7 +22,7 @@ dashboards:
 hubble:
   enabled: true
   metrics:
-    enable:
+    enabled:
       - dns:query;ignoreAAAA
       - drop
       - tcp
