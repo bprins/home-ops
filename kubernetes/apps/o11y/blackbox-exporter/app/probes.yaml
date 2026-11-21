@@ -60,3 +60,24 @@ spec:
     - targetLabel: service
       replacement: blackbox-exporter
       action: replace
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: npm-certs
+spec:
+  module: tls_expiry
+  interval: 1m
+  prober:
+    url: blackbox-exporter.o11y.svc.cluster.local:9115
+  targets:
+    staticConfig:
+      static:
+        - https://forgejo.bprins.net
+        - https://matrix.bprins.net
+        - https://litellm.bprins.net
+  metricRelabelings:
+    - targetLabel: service
+      replacement: blackbox-exporter
+      action: replace

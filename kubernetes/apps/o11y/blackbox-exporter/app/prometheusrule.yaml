@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: blackbox-exporter-rules
+spec:
+  groups:
+    - name: tls-certificates
+      rules:
+        - alert: TLSCertExpiringSoon
+          expr: |-
+            probe_ssl_earliest_cert_expiry{job="probe/o11y/npm-certs"} - time() < 14 * 86400
+          for: 1h
+          annotations:
+            summary: >-
+              The TLS cert for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}; renewal is failing
+          labels:
+            severity: warning
+
+        - alert: TLSCertProbeFailing
+          expr: |-
+            max by (instance) (probe_success{job="probe/o11y/npm-certs"}) == 0
+          for: 3h
+          annotations:
+            summary: >-
+              The TLS cert probe for {{ $labels.instance }} has failed for 3h, so its expiry is not being watched
+          labels:
+            severity: warning
