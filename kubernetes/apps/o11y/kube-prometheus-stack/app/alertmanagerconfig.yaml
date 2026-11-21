@@ -6,7 +6,7 @@ metadata:
   name: alertmanager
 spec:
   route:
-    receiver: "null"
+    receiver: ntfy
     groupBy:
       - alertname
       - severity
@@ -36,7 +36,7 @@ spec:
           - name: job
             value: ohmgraphite
             matchType: =
-      - receiver: "null"
+      - receiver: ntfy
         matchers:
           - name: severity
             value: critical
@@ -56,6 +56,9 @@ spec:
           value: warning
           matchType: =
   receivers:
-    # Placeholder default receiver; the blackhole routes above stay as-is
-    - name: "null"
+    - name: ntfy
+      webhookConfigs:
+        # ntfy's built-in template turns the Alertmanager payload into a readable message
+        - url: http://ntfy.default.svc.cluster.local/home-ops?template=alertmanager
+          sendResolved: true
     - name: blackhole
