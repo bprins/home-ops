@@ -21,12 +21,15 @@ spec:
           - name: alertname
             value: InfoInhibitor
             matchType: =
-      # Deadman's switch from defaultRules; always firing. Should be repointed at a heartbeat endpoint
-      - receiver: blackhole
+      # Always firing; healthchecks.io notifies via ntfy.sh when these pings stop
+      - receiver: heartbeat
         matchers:
           - name: alertname
             value: Watchdog
             matchType: =
+        groupWait: 0s
+        groupInterval: 1m
+        repeatInterval: 5m
       # Desktops monitored with ohmgraphite are regularly powered off
       - receiver: blackhole
         matchers:
@@ -61,4 +64,10 @@ spec:
         # ntfy's built-in template turns the Alertmanager payload into a readable message
         - url: http://ntfy.default.svc.cluster.local/home-ops?template=alertmanager
           sendResolved: true
+    - name: heartbeat
+      webhookConfigs:
+        - urlSecret:
+            name: alertmanager-heartbeat
+            key: url
+          sendResolved: false
     - name: blackhole
