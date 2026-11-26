@@ -73,6 +73,10 @@ rules:
       - cert-manager.io
       - acme.cert-manager.io
       - gateway.envoyproxy.io
+      - metrics.k8s.io
+      - kopiur.home-operations.com
+      - monitoring.coreos.com
+      - grafana.integreatly.org
     resources: ["*"]
     verbs: ["get", "list", "watch"]
 ---
