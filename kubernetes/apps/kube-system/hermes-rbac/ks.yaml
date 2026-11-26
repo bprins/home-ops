@@ -7,6 +7,10 @@ metadata:
 spec:
   interval: 1h
   path: ./kubernetes/apps/kube-system/hermes-rbac/app
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
