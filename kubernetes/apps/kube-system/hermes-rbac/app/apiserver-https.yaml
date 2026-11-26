@@ -1,0 +1,23 @@
+---
+# The API server on 10.10.0.49:443 as well as :6443, for Hermes: OpenShell's
+# sandbox proxy refuses port 6443 (not configurable)
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.33.0-standalone-strict/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-apiserver-https
+  annotations:
+    external-dns.kubernetes.io/hostname: k8s.${SECRET_DOMAIN}
+    external-dns.kubernetes.io/target: 10.10.0.49
+    external-dns.kubernetes.io/ttl: "300"
+spec:
+  type: ClusterIP
+  externalIPs: ["10.10.0.49"]
+  externalTrafficPolicy: Local
+  selector:
+    k8s-app: kube-apiserver
+  ports:
+    - name: https
+      port: 443
+      targetPort: 6443
+      protocol: TCP
