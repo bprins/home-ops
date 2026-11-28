@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: docker.io/binwiederhier/ntfy
-              tag: v2.38.1@sha256:038da2be5e668fee6d36a62884eea48975e1b71c29a56964e5298c1b9165a573
+              tag: v2.38.3@sha256:874299b207a9815e7a0cf551b3a094241db7604fa2d274bbd86f569154b6ea51
             args: ["serve"]
             env:
               # The iOS app fetches messages from this URL after an upstream poll request
